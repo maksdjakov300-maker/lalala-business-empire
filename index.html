@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LALALA Business Empire</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#171d3b;color:white;font-family:Arial,sans-serif;text-align:center;padding:20px}
+h1{color:#ffd45e;font-size:32px}
+.card{background:#293968;padding:22px;border-radius:22px;margin:15px auto;max-width:450px}
+.balance{font-size:42px;color:#ffd45e;font-weight:bold}
+button{border:0;border-radius:15px;padding:14px;background:#ffd45e;color:#39270a;font-weight:bold;font-size:16px}
+.coin{width:155px;height:155px;border-radius:50%;font-size:65px;background:radial-gradient(#fff0a5,#ffba28);box-shadow:0 9px #99601e;margin:20px}
+.coin:active{transform:translateY(6px);box-shadow:0 3px #99601e}
+.business{display:flex;align-items:center;justify-content:space-between;background:#354675;padding:13px;border-radius:15px;margin:10px 0;text-align:left;gap:8px}
+.info{flex:1;font-size:13px}
+.info strong{font-size:16px}
+.buy{font-size:12px;padding:12px 8px}
+button:disabled{background:#68728d;color:white}
+</style>
+</head>
+<body>
+<h1>🏦 LALALA</h1>
+<p>ТВОЯ БИЗНЕС-ИМПЕРИЯ</p>
+<div class="card">
+<p>ТВОЙ КАПИТАЛ</p>
+<div class="balance" id="balance">0</div>
+<p>🪙 ЛАЛА-КОИНОВ</p>
+<p>⚡ Доход: <span id="income">0</span> / сек</p>
+</div>
+<h3>ЖМИ И ЗАРАБАТЫВАЙ</h3>
+<button class="coin" onclick="tap()">🪙</button>
+<p>Каждое нажатие приносит 1 монету!</p>
+<div class="card">
+<h2>🏢 ТВОИ БИЗНЕСЫ</h2>
+<div id="businesses"></div>
+</div>
+<script>
+const items=[
+{id:"coffee",name:"Кофейня",icon:"☕",base:50,rate:1},
+{id:"shop",name:"Магазин",icon:"🏪",base:250,rate:5},
+{id:"factory",name:"Завод",icon:"🏭",base:1200,rate:25},
+{id:"tower",name:"Небоскрёб",icon:"🏙️",base:6000,rate:120}
+];
+let game;
+try{
+game=JSON.parse(localStorage.getItem("lalala"))||{coins:0,levels:{}};
+}catch(e){game={coins:0,levels:{}}}
+function income(){
+return items.reduce((s,b)=>s+b.rate*(game.levels[b.id]||0),0);
+}
+function cost(b){
+return Math.floor(b.base*Math.pow(1.55,game.levels[b.id]||0));
+}
+function save(){
+localStorage.setItem("lalala",JSON.stringify(game));
+}
+function tap(){
+game.coins++;
+render();
+save();
+}
+function buy(id){
+let b=items.find(x=>x.id===id);
+let c=cost(b);
+if(game.coins<c)return;
+game.coins-=c;
+game.levels[id]=(game.levels[id]||0)+1;
+render();
+save();
+}
+function render(){
+document.getElementById("balance").textContent=Math.floor(game.coins).toLocaleString("ru-RU");
+document.getElementById("income").textContent=income();
+document.getElementById("businesses").innerHTML=items.map(b=>{
+let lvl=game.levels[b.id]||0;
+let c=cost(b);
+return `<div class="business">
+<div class="info"><strong>${b.icon} ${b.name}</strong><br>
+Уровень: ${lvl}<br>Доход: +${b.rate}/сек</div>
+<button class="buy" onclick="buy('${b.id}')" ${game.coins<c?"disabled":""}>${c} 🪙</button>
+</div>`;
+}).join("");
+}
+render();
+setInterval(()=>{
+game.coins+=income();
+render();
+save();
+},1000);
+</script>
+</body>
+</html>
