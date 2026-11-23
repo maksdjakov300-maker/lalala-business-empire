@@ -3,64 +3,140 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LALALA Business Empire</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10152b">
+<title>LALALA 2.0</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#171d3b;color:white;font-family:Arial,sans-serif;text-align:center;padding:20px}
-h1{color:#ffd45e;font-size:32px}
-.card{background:#293968;padding:22px;border-radius:22px;margin:15px auto;max-width:450px}
-.balance{font-size:42px;color:#ffd45e;font-weight:bold}
-button{border:0;border-radius:15px;padding:14px;background:#ffd45e;color:#39270a;font-weight:bold;font-size:16px}
-.coin{width:155px;height:155px;border-radius:50%;font-size:65px;background:radial-gradient(#fff0a5,#ffba28);box-shadow:0 9px #99601e;margin:20px}
-.coin:active{transform:translateY(6px);box-shadow:0 3px #99601e}
-.business{display:flex;align-items:center;justify-content:space-between;background:#354675;padding:13px;border-radius:15px;margin:10px 0;text-align:left;gap:8px}
-.info{flex:1;font-size:13px}
+body{margin:0;background:#10152b;color:#fff;font-family:Arial,sans-serif;padding:18px 15px 45px}
+header{text-align:center;padding:15px}
+header h1{font-size:36px;color:#ffd45e;margin:5px}
+header p{color:#aebbe0}
+.card{background:linear-gradient(145deg,#293b70,#202c50);border:1px solid #40558b;border-radius:23px;padding:20px;margin:15px auto;max-width:520px}
+.balance{text-align:center;font-size:42px;font-weight:bold;color:#ffda68;margin:15px}
+.small{color:#b9c6e9;font-size:13px}
+.stats{display:flex;justify-content:space-around;text-align:center;gap:8px}
+.stats strong{display:block;font-size:20px;color:#ffda68;margin-top:5px}
+h2{font-size:21px}
+.taparea{text-align:center;padding:12px}
+.coin{width:165px;height:165px;border-radius:50%;border:8px solid #ffdf7c;background:radial-gradient(#fff2ae,#ffba32);font-size:76px;box-shadow:0 10px #9b641b;cursor:pointer}
+.coin:active{transform:translateY(7px);box-shadow:0 3px #9b641b}
+button{cursor:pointer;border:0;border-radius:14px;padding:12px 15px;background:#ffcf55;color:#392a0a;font-weight:bold;font-size:14px}
+button:disabled{opacity:.4;cursor:not-allowed}
+.business{display:flex;align-items:center;gap:10px;background:#344777;border-radius:16px;padding:12px;margin:11px 0}
+.emoji{font-size:35px}
+.info{flex:1;text-align:left;min-width:0}
 .info strong{font-size:16px}
-.buy{font-size:12px;padding:12px 8px}
-button:disabled{background:#68728d;color:white}
+.info p{margin:5px 0;color:#c5d0ec;font-size:12px}
+.buy{min-width:100px;font-size:12px;padding:12px 7px}
+.reward{text-align:center;background:linear-gradient(135deg,#6650a9,#334d8d)}
+.reward button{margin-top:10px}
+.tag{display:inline-block;background:#172747;color:#ffdf82;padding:5px 9px;border-radius:9px;font-size:11px}
+#notice{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#ffd45e;color:#29200c;padding:13px 20px;border-radius:15px;font-weight:bold;display:none;z-index:5;white-space:nowrap}
+footer{text-align:center;color:#7888b0;font-size:12px;margin-top:30px}
 </style>
 </head>
 <body>
+<header>
 <h1>🏦 LALALA</h1>
-<p>ТВОЯ БИЗНЕС-ИМПЕРИЯ</p>
+<p>BUSINESS EMPIRE · SEASON 1</p>
+<span class="tag">VERSION 2.0</span>
+</header>
+
 <div class="card">
-<p>ТВОЙ КАПИТАЛ</p>
+<div class="small" style="text-align:center">ТВОЙ КАПИТАЛ</div>
 <div class="balance" id="balance">0</div>
-<p>🪙 ЛАЛА-КОИНОВ</p>
-<p>⚡ Доход: <span id="income">0</span> / сек</p>
+<div class="stats">
+<div>⚡ Доход<strong id="income">0</strong><span class="small"> / сек</span></div>
+<div>🏢 Бизнесы<strong id="count">0</strong><span class="small"> уровней</span></div>
 </div>
-<h3>ЖМИ И ЗАРАБАТЫВАЙ</h3>
+</div>
+
+<div class="taparea">
+<h2>💰 ЗАРАБАТЫВАЙ</h2>
 <button class="coin" onclick="tap()">🪙</button>
-<p>Каждое нажатие приносит 1 монету!</p>
+<p class="small">Нажимай и увеличивай своё состояние!</p>
+<p>За нажатие: <b id="tapvalue">+1</b> 🪙</p>
+</div>
+
+<div class="card reward">
+<h2>🎁 ЕЖЕДНЕВНАЯ НАГРАДА</h2>
+<p id="rewardtext">Забери свой ежедневный бонус!</p>
+<button id="rewardbtn" onclick="daily()">ЗАБРАТЬ БОНУС</button>
+</div>
+
 <div class="card">
-<h2>🏢 ТВОИ БИЗНЕСЫ</h2>
+<h2>🏙️ ТВОЯ БИЗНЕС-ИМПЕРИЯ</h2>
+<p class="small">Покупай предприятия. Каждый уровень приносит доход автоматически.</p>
 <div id="businesses"></div>
 </div>
+
+<div class="card">
+<h2>🚀 ГЛОБАЛЬНЫЕ УЛУЧШЕНИЯ</h2>
+<p class="small">Увеличивай прибыль всей империи!</p>
+<div class="business">
+<div class="emoji">👆</div>
+<div class="info"><strong>Сильный палец</strong><p>Увеличивает доход за нажатие вдвое</p><p>Уровень: <span id="taplevel">0</span></p></div>
+<button class="buy" id="tapbuy" onclick="upgradeTap()">Купить</button>
+</div>
+<div class="business">
+<div class="emoji">📈</div>
+<div class="info"><strong>Бизнес-стратегия</strong><p>Увеличивает доход всех предприятий на 25%</p><p>Уровень: <span id="multlevel">0</span></p></div>
+<button class="buy" id="multbuy" onclick="upgradeMult()">Купить</button>
+</div>
+</div>
+
+<div class="card">
+<h2>🏆 ДОСТИЖЕНИЯ</h2>
+<div id="achievements" class="small"></div>
+</div>
+
+<footer>LALALA BUSINESS EMPIRE © 2026<br>Создано с амбициями и жадностью 😈</footer>
+<div id="notice"></div>
+
 <script>
 const items=[
 {id:"coffee",name:"Кофейня",icon:"☕",base:50,rate:1},
 {id:"shop",name:"Магазин",icon:"🏪",base:250,rate:5},
 {id:"factory",name:"Завод",icon:"🏭",base:1200,rate:25},
-{id:"tower",name:"Небоскрёб",icon:"🏙️",base:6000,rate:120}
+{id:"tower",name:"Небоскрёб",icon:"🏙️",base:6000,rate:120},
+{id:"restaurant",name:"Ресторан",icon:"🍔",base:25000,rate:500},
+{id:"bank",name:"Банк",icon:"🏦",base:100000,rate:2500},
+{id:"airport",name:"Аэропорт",icon:"✈️",base:500000,rate:12000},
+{id:"space",name:"Космическая компания",icon:"🚀",base:2500000,rate:60000}
 ];
-let game;
-try{
-game=JSON.parse(localStorage.getItem("lalala"))||{coins:0,levels:{}};
-}catch(e){game={coins:0,levels:{}}}
-function income(){
-return items.reduce((s,b)=>s+b.rate*(game.levels[b.id]||0),0);
+
+function load(){
+try{return JSON.parse(localStorage.getItem("lalala"))||{}}
+catch(e){return {}}
 }
-function cost(b){
-return Math.floor(b.base*Math.pow(1.55,game.levels[b.id]||0));
+let game=Object.assign({
+coins:0,levels:{},tapLevel:0,multLevel:0,
+lastDaily:"",streak:0,lastSeen:Date.now()
+},load());
+game.levels=game.levels||{};
+game.tapLevel=game.tapLevel||0;
+game.multLevel=game.multLevel||0;
+
+let now=Date.now();
+let offline=Math.min(28800,Math.max(0,(now-(game.lastSeen||now))/1000));
+let offlineCoins=Math.floor(offline*getIncome());
+if(offlineCoins>0){
+game.coins+=offlineCoins;
+setTimeout(()=>notify("💤 Пока тебя не было: +"+offlineCoins.toLocaleString("ru-RU")+" монет!"),500);
 }
-function save(){
-localStorage.setItem("lalala",JSON.stringify(game));
+game.lastSeen=now;
+
+function getIncome(){
+let base=items.reduce((s,b)=>s+b.rate*(game.levels[b.id]||0),0);
+return Math.floor(base*Math.pow(1.25,game.multLevel));
 }
+function tapCost(){return Math.floor(100*Math.pow(3,game.tapLevel))}
+function multCost(){return Math.floor(500*Math.pow(4,game.multLevel))}
+function cost(b){return Math.floor(b.base*Math.pow(1.55,game.levels[b.id]||0))}
 function tap(){
-game.coins++;
-render();
-save();
+game.coins+=Math.pow(2,game.tapLevel);
+render();save();
 }
 function buy(id){
 let b=items.find(x=>x.id===id);
@@ -68,28 +144,88 @@ let c=cost(b);
 if(game.coins<c)return;
 game.coins-=c;
 game.levels[id]=(game.levels[id]||0)+1;
-render();
-save();
+notify("🎉 Куплено: "+b.name);
+render();save();
+}
+function upgradeTap(){
+let c=tapCost();
+if(game.coins<c)return;
+game.coins-=c;game.tapLevel++;
+notify("👆 Сила нажатия увеличена!");
+render();save();
+}
+function upgradeMult(){
+let c=multCost();
+if(game.coins<c)return;
+game.coins-=c;game.multLevel++;
+notify("📈 Прибыль империи увеличена!");
+render();save();
+}
+function daily(){
+let today=new Date().toLocaleDateString("en-CA");
+if(game.lastDaily===today)return;
+game.streak=game.lastDaily===new Date(Date.now()-86400000).toLocaleDateString("en-CA")?game.streak+1:1;
+let bonus=500*game.streak;
+game.coins+=bonus;
+game.lastDaily=today;
+notify("🎁 Получено "+bonus.toLocaleString("ru-RU")+" монет!");
+render();save();
+}
+function notify(msg){
+let el=document.getElementById("notice");
+el.textContent=msg;el.style.display="block";
+clearTimeout(window.noticeTimer);
+window.noticeTimer=setTimeout(()=>el.style.display="none",2600);
+}
+function save(){
+game.lastSeen=Date.now();
+localStorage.setItem("lalala",JSON.stringify(game));
 }
 function render(){
 document.getElementById("balance").textContent=Math.floor(game.coins).toLocaleString("ru-RU");
-document.getElementById("income").textContent=income();
+document.getElementById("income").textContent=getIncome().toLocaleString("ru-RU");
+document.getElementById("tapvalue").textContent="+"+Math.pow(2,game.tapLevel);
+document.getElementById("count").textContent=items.reduce((s,b)=>s+(game.levels[b.id]||0),0);
+document.getElementById("taplevel").textContent=game.tapLevel;
+document.getElementById("multlevel").textContent=game.multLevel;
+
 document.getElementById("businesses").innerHTML=items.map(b=>{
-let lvl=game.levels[b.id]||0;
-let c=cost(b);
+let lvl=game.levels[b.id]||0,c=cost(b);
 return `<div class="business">
-<div class="info"><strong>${b.icon} ${b.name}</strong><br>
-Уровень: ${lvl}<br>Доход: +${b.rate}/сек</div>
-<button class="buy" onclick="buy('${b.id}')" ${game.coins<c?"disabled":""}>${c} 🪙</button>
+<div class="emoji">${b.icon}</div>
+<div class="info"><strong>${b.name}</strong><p>Уровень: ${lvl}</p><p>Доход: +${(b.rate*Math.pow(1.25,game.multLevel)).toFixed(0)} / сек</p></div>
+<button class="buy" onclick="buy('${b.id}')" ${game.coins<c?"disabled":""}>${c.toLocaleString("ru-RU")} 🪙</button>
 </div>`;
 }).join("");
+
+let tc=tapCost(),mc=multCost();
+document.getElementById("tapbuy").textContent=tc.toLocaleString("ru-RU")+" 🪙";
+document.getElementById("tapbuy").disabled=game.coins<tc;
+document.getElementById("multbuy").textContent=mc.toLocaleString("ru-RU")+" 🪙";
+document.getElementById("multbuy").disabled=game.coins<mc;
+
+let today=new Date().toLocaleDateString("en-CA");
+let claimed=game.lastDaily===today;
+document.getElementById("rewardbtn").disabled=claimed;
+document.getElementById("rewardbtn").textContent=claimed?"УЖЕ ПОЛУЧЕНО":"ЗАБРАТЬ БОНУС";
+document.getElementById("rewardtext").textContent=claimed?"Возвращайся завтра!":"Серия входов: "+game.streak+" дней. Бонус: "+(500*(game.streak+1))+" монет.";
+
+let total=game.coins+items.reduce((s,b)=>s+(game.levels[b.id]||0)*b.base,0);
+let achievements=[];
+if(total>=100)achievements.push("🥉 Первые 100 монет");
+if(total>=10000)achievements.push("🥈 Богач: 10 000 монет");
+if(total>=1000000)achievements.push("🥇 Миллионер");
+if(getIncome()>=100)achievements.push("⚡ Доход 100 в секунду");
+if(items.some(b=>(game.levels[b.id]||0)>=10))achievements.push("🏗️ Мастер строительства");
+document.getElementById("achievements").innerHTML=achievements.length?achievements.map(x=>"✓ "+x).join("<br>"):"Пока достижений нет. Время заработать!";
 }
 render();
 setInterval(()=>{
-game.coins+=income();
-render();
-save();
+let inc=getIncome();
+game.coins+=inc;
+render();save();
 },1000);
+window.addEventListener("pagehide",save);
 </script>
 </body>
 </html>
