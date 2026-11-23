@@ -107,6 +107,27 @@ pointer-events:none;
 .building:active{
 transform:scale(1.06);
 }
+
+.floating-coin{
+z-index:999;
+pointer-events:none;
+font-size:22px;
+font-weight:900;
+white-space:nowrap;
+animation:coinFly .8s ease-out forwards;
+}
+
+@keyframes coinFly{
+0%{
+opacity:1;
+transform:translate(-50%,-50%) scale(.7);
+}
+100%{
+opacity:0;
+transform:translate(-50%,-150%) scale(1.4);
+}
+}
+
 </style>
 </head>
 <body>
@@ -263,12 +284,26 @@ $("daily").textContent=s.dailyDay===today?
 "✅ Награда получена":"🎁 Забрать ежедневную награду";
 }
 
+
 $("tap").onclick=()=>{
 s.money+=s.tap;
 addXP(1);
+
+const coin=document.createElement("div");
+coin.className="floating-coin";
+coin.textContent="🪙 +"+fmt(s.tap);
+coin.style.position="absolute";
+coin.style.left="50%";
+coin.style.top="50%";
+coin.style.transform="translate(-50%,-50%)";
+$("tap").appendChild(coin);
+
+setTimeout(()=>coin.remove(),800);
+
 render();
 save();
 };
+
 
 $("businesses").onclick=e=>{
 let b=e.target.closest("[data-buy]");
