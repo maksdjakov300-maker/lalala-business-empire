@@ -72,6 +72,41 @@ color:#392400;font-weight:900;
 }
 .rare-card button:disabled{opacity:.4}
 .rare-card.owned{border-color:#65e6a5}
+@keyframes buildingRise{
+from{transform:translateY(35px) scale(.85);opacity:0}
+to{transform:translateY(0) scale(1);opacity:1}
+}
+@keyframes windowGlow{
+0%,100%{filter:brightness(1)}
+50%{filter:brightness(1.5)}
+}
+.building{
+animation:buildingRise .7s ease both;
+transition:transform .25s,filter .25s;
+}
+.building{
+position:relative;
+overflow:hidden;
+}
+
+.building:before{
+content:"";
+position:absolute;
+inset:10% 15%;
+background:repeating-linear-gradient(
+90deg,
+transparent 0 12px,
+#ffe58a 13px 17px,
+transparent 18px 25px
+);
+opacity:.35;
+filter:drop-shadow(0 0 8px #ffd166);
+animation:windowGlow 3s ease-in-out infinite;
+pointer-events:none;
+}
+.building:active{
+transform:scale(1.06);
+}
 </style>
 </head>
 <body>
@@ -191,7 +226,7 @@ $("xpfill").style.width=(s.xp/xpNeed()*100)+"%";
 $("skyline").innerHTML=defs.map((d,i)=>{
 let lv=s.levels[i];
 let height=75+Math.min(lv,12)*8;
-return `<div class="building ${d.color}" style="height:${height}px;opacity:${lv?1:.45}">
+return `<div class="building ${d.color}" style="height:${height}px;opacity:${lv?1:.45};animation:buildingRise .7s ease both">
 <div class="emoji">${d.emoji}</div>
 <b>${d.name}</b>
 <span>${lv?"ур. "+lv:"пусто"}</span>
