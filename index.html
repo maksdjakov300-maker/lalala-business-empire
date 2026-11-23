@@ -5,6 +5,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LALALA Business Empire</title>
+
+#rareShop{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.rare-card{
+background:linear-gradient(145deg,#293b61,#17223d);
+border:1px solid #7185bd;
+border-radius:15px;
+padding:13px;
+box-shadow:0 5px 15px #0004;
+}
+.rare-card .rare-icon{font-size:30px}
+.rare-card b{display:block;margin:7px 0;font-size:14px}
+.rare-card p{font-size:11px;color:#b8c6e3;min-height:30px}
+.rare-card button{
+width:100%;padding:10px;border:0;
+border-radius:9px;background:#ffd166;
+color:#392400;font-weight:900;
+}
+.rare-card button:disabled{opacity:.4}
+.rare-card.owned{border-color:#65e6a5}
 <style>
 *{box-sizing:border-box}
 body{margin:0;padding:15px;background:#10172c;color:#fff;font-family:Arial,sans-serif}
@@ -291,6 +310,72 @@ s.money+=income();
 render();
 save();
 },1000);
+
+const rareItems=[
+{
+id:"goldFinger",
+icon:"🖐️",
+name:"Золотой палец",
+desc:"Сила нажатия увеличивается в 3 раза",
+price:2500,
+buy:()=>s.tap*=3
+},
+{
+id:"investor",
+icon:"💼",
+name:"Миллиардер",
+desc:"Весь пассивный доход увеличивается в 1.5 раза",
+price:10000,
+buy:()=>s.mult*=1.5
+},
+{
+id:"empire",
+icon:"👑",
+name:"Империя",
+desc:"Весь пассивный доход увеличивается в 2 раза",
+price:50000,
+buy:()=>s.mult*=2
+}
+];
+
+s.rareOwned=s.rareOwned||[];
+
+function renderRareShop(){
+$("rareShop").innerHTML=rareItems.map(item=>{
+let owned=s.rareOwned.includes(item.id);
+return `<div class="rare-card ${owned?"owned":""}">
+<div class="rare-icon">${item.icon}</div>
+<b>${item.name}</b>
+<p>${item.desc}</p>
+<button data-rare="${item.id}" ${owned||s.money<item.price?"disabled":""}>
+${owned?"✅ Куплено":fmt(item.price)+" 🪙"}
+</button>
+</div>`;
+}).join("");
+}
+
+const oldRender=render;
+render=function(){
+oldRender();
+renderRareShop();
+};
+
+$("rareShop").onclick=e=>{
+const btn=e.target.closest("[data-rare]");
+if(!btn)return;
+
+const item=rareItems.find(x=>x.id===btn.dataset.rare);
+if(!item||s.rareOwned.includes(item.id))return;
+if(s.money<item.price)return;
+
+s.money-=item.price;
+item.buy();
+s.rareOwned.push(item.id);
+addXP(100);
+
+render();
+save();
+};
 
 render();
 save();
